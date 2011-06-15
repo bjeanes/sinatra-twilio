@@ -1,7 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Sinatra::Application do
-  let(:app) { Sinatra::Application }
+  # Create a new sub-class each time to avoid bleeding routes between
+  # tests
+  let(:app) { Class.new(Sinatra::Application) }
 
   describe "#respond" do
     context "defining routes" do
