@@ -63,5 +63,16 @@ describe Sinatra::Application do
         end
       end
     end
+
+    context "building Twilio::Response" do
+      it "can access instance methods on Twilio::Response transparently" do
+        app.respond("/") { addSay "1" }
+
+        get "/"
+
+        last_response.status.should == 200
+        last_response.body.should == "<Response><Say>1</Say></Response>"
+      end
+    end
   end
 end
