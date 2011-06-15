@@ -50,8 +50,8 @@ describe Sinatra::Application do
         app.respond("/1") { addSay "1" }
         app.respond("/2") { addSay "2" }
 
-        get("/1").body.should_not == get("/2").body
-        last_response.status.should == 200
+        get("/1").body.should_not =~ /2/
+        get("/2").body.should_not =~ /1/
       end
     end
 
