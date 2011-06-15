@@ -25,6 +25,7 @@ describe Sinatra::Application do
 
         get_response  = get(route)
         post_response = post(route)
+
         t[get_response].should == t[post_response]
       end
     end

@@ -1,24 +1,15 @@
 require "sinatra/base"
-require "twiliolib"
+require "sinatra/twilio/response"
 
 module Sinatra
   module Twilio
     module Helpers
-      def method_missing(method, *args, &block)
-        twilio.send(method, *args, &block)
-      rescue
-        super(method, *args, &block)
-      end
-
-      def twilio
-        @twilio ||= ::Twilio::Response.new
-      end
-
     end
 
     def respond(route, conditions = {}, &block)
       action = Proc.new do
-        instance_eval(&block) if block_given?
+        twilio = Response.new(self)
+        twilio.instance_eval &block if block_given?
         twilio.respond
       end
 
