@@ -1,6 +1,68 @@
 = sinatra-twilio
 
-Description goes here.
+This is a library for creating simple web apps to handle incoming
+SMSes/Calls with Sinatra using a nice DSL.
+
+== Installation
+
+=== Using Bundler
+
+  gem 'sinatra-twilio', :require => 'sinatra/twilio'
+
+=== Not using bundler
+
+Run:
+
+  gem install sinatra-twilio
+
+Then in you Sinatra app, add the following lines after you require
+"sinatra":
+
+  require 'sinatra/twilio'
+
+== A totally contrived and un-tested example
+
+  require "sinatra"
+  require "sinatra/twilio"
+
+  callers = %w[+15551234567]
+  pin     = "1234"
+
+  respond "/call" do
+    addSay "Welcome caller."
+
+    if callers.include? params[:From]
+      addRedirect "/allowed_call"
+    else
+      addRedirect "/disallowed_call"
+    end
+  end
+
+  respond "/allowed_call" do
+    addPlay "/latest_message.mp3"
+  end
+
+  respond "/disallowed_call" do
+    gather = Twilio::Gather.new(:action => "/authenticate")
+    gather.addSay "Please enter your PIN now:"
+    append gather
+
+    addSay "You did not enter a pin. Good bye!"
+    addHangup
+  end
+
+  respond "/authenticate" do
+    if params[:Digits] == pin
+      addRedirect "/allowed_call"
+    else
+      addRedirect "/disallowed_call"
+    end
+  end
+
+  get "/latest_message.mp3" do
+    # Assuming we have an ORM...
+    send_file Message.last.path, :stream => true
+  end
 
 == Contributing to sinatra-twilio
 
