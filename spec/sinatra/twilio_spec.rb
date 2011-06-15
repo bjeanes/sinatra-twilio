@@ -38,7 +38,7 @@ describe Sinatra::Application do
 
       it "always returns a <Response> object" do
         app.respond "/"
-        get("/").body.should =~ /<Response>.*<\/Response>/
+        get("/").body.should =~ /^<Response>.*<\/Response>$/
       end
 
       it "doesn't return the response of the block" do
