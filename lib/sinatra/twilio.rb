@@ -5,18 +5,21 @@ module Sinatra
   module Twilio
     module Helpers
       def method_missing(method, *args, &block)
-        @twilio.send(method, *args, &block)
+        twilio.send(method, *args, &block)
       rescue
         super(method, *args, &block)
+      end
+
+      def twilio
+        @twilio ||= ::Twilio::Response.new
       end
 
     end
 
     def respond(route, conditions = {}, &block)
       action = Proc.new do
-        @twilio = ::Twilio::Response.new
         instance_eval(&block) if block_given?
-        @twilio.respond
+        twilio.respond
       end
 
       get  route, conditions, &action
