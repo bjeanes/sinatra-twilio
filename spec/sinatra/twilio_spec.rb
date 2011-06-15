@@ -52,5 +52,14 @@ describe Sinatra::Application do
         last_response.status.should == 200
       end
     end
+
+    context "action block has access to normal Sinatra helpers" do
+      %w[params request response].each do |helper|
+        it "can access #{helper.inspect} method" do
+          app.respond("/") { eval(helper) }
+          get("/").status.should == 200
+        end
+      end
+    end
   end
 end
