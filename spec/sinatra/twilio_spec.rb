@@ -2,14 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Sinatra::Application do
   let(:app) { Sinatra::Application }
-  subject { app }
 
   describe "#respond" do
     context "defining routes" do
       let(:route) { "/foo" }
       let(:action) { Proc.new {} }
 
-      before { app.respond(route, &action) }
+      before(:all) { app.respond(route, &action) }
 
       it "defines a GET route" do
         app.routes["GET"].should have(1).item
@@ -25,6 +24,24 @@ describe Sinatra::Application do
         get_response  = get(route)
         post_response = post(route)
         t[get_response].should == t[post_response]
+      end
+    end
+
+    context "returning TwiML response" do
+      it "allows empty block" do
+        lambda {
+          app.respond "/"
+        }.should_not raise_error
+      end
+
+      it "always returns a <Response> object" do
+        app.respond "/"
+        get("/").body.should =~ /<Response>.*<\/Response>/
+      end
+
+      it "doesn't return the response of the block" do
+        app.respond("/") { "foobar123" }
+        get("/").body.should_not =~ /foobar123/
       end
     end
   end

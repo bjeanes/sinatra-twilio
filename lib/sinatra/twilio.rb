@@ -1,10 +1,17 @@
 require "sinatra/base"
+require "twiliolib"
 
 module Sinatra
   module Twilio
     def respond(route, conditions = {}, &block)
-      get  route, conditions, &block
-      post route, conditions, &block
+      action = Proc.new do
+        @twilio = ::Twilio::Response.new
+        instance_eval(&block) if block
+        @twilio.respond
+      end
+
+      get  route, conditions, &action
+      post route, conditions, &action
     end
   end
 
