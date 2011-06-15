@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
-gem 'sinatra'
-gem 'twilio'
+gem 'sinatra', :require => false
+gem 'twiliolib'
 
 group :development do
   gem "rspec", "~> 2.3.0"
