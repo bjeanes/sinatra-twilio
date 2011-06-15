@@ -43,6 +43,14 @@ describe Sinatra::Application do
         app.respond("/") { "foobar123" }
         get("/").body.should_not =~ /foobar123/
       end
+
+      it "creates a new Twilio::Response for each route" do
+        app.respond("/1") { addSay "1" }
+        app.respond("/2") { addSay "2" }
+
+        get("/1").body.should_not == get("/2").body
+        last_response.status.should == 200
+      end
     end
   end
 end

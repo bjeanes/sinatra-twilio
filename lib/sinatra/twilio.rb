@@ -6,7 +6,7 @@ module Sinatra
     def respond(route, conditions = {}, &block)
       action = Proc.new do
         @twilio = ::Twilio::Response.new
-        instance_eval(&block) if block
+        instance_eval(&block) if block_given?
         @twilio.respond
       end
 
